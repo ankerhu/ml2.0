@@ -17,18 +17,18 @@ def classify0(inX,dataSet,labels,k):
     classCount={}
     for i in range(k):
         voteIlabel=labels[sortedDistIndices[i]]
-        #print(voteIlabel) 距离由短到长得到对应标签的值
+        print(voteIlabel) #距离由短到长得到对应标签的值
         classCount[voteIlabel]=classCount.get(voteIlabel,0)+1
-        #print(classCount) 得到标签及其数量的字典列表
-    sortedClassCount=sorted(classCount.items(),key=operator.itemgetter(1),reverse=True)
-    #print(classCount.items())items方法将字典变为元组列表
-    #print(sortedClassCount) 将ClassCount按照第二个元素也就是标签出现的次数进行由大到小排序，越大说明在前k个标签中出现的重复次数越多
+        print(classCount) #得到标签及其数量的字典列表
+    sortedClassCount=sorted(classCount.iteritems(),key=operator.itemgetter(1),reverse=True)
+    #print(classCount.items())#items方法将字典变为元组列表
+    #print(sortedClassCount) #将ClassCount按照第二个元素也就是不同标签出现的次数进行由大到小排序，越大说明在前k个标签中出现的重复次数越多，如果是同一个标签就不存在排序。所以该算法的核心并不是找最近的标签，而且找在k个最近中出现概率最大的标签
     return sortedClassCount[0][0]
 def file2matrix(filename):
     fr=open(filename)
     numberOfLines=len(fr.readlines())
     returnMat=zeros((numberOfLines,3))
-    classLabelVector=range(numberOfLines)
+    classLabelVector=list(range(numberOfLines))
     fr=open(filename)
     index=0
     for line in fr.readlines():
@@ -61,3 +61,17 @@ def datingClassSet():
         if classifierResult!=datingLabels[i]:
             errorCount+=1.0
     print('the error rate is %f'%(errorCount/float(numTestVect)))
+def classifyPerson():
+    #resultList=['not at all','in a small doses','in a large doses']
+    percentTats=float(input('percentage of time spent playing games'))
+    ffMiles=float(input('frequent flier miles earned per year'))
+    iceCream=float(input('liters of ice cream consumed per year'))
+    inArr=array([percentTats,ffMiles,iceCream])
+    datingDataMat,datingLabels=file2matrix('datingTestSet.txt')
+    normMat,ranges,minVals=autoNorm(datingDataMat)
+    #print(normMat)
+    #print(ranges)
+    #print(minVals)
+    #print(datingLabels)
+    classifierResult=classify0((inArr-minVals)/ranges,normMat,datingLabels,3)
+    print('You will probably like the person ',classifierResult)

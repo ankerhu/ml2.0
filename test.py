@@ -1,4 +1,5 @@
 import kNN
+#import matplotlib
 #group,labels=kNN.createDataSet()
 #result=kNN.classify0([0,0],group,labels,3)
 #print(result)
@@ -9,4 +10,5 @@ import kNN
 #print(normMat)
 #print(range)
 #print(minVals)
-kNN.datingClassSet()
+#kNN.classifyPerson()
+kNN.datingClassTest2()
