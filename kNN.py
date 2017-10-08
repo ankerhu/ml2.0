@@ -1,6 +1,7 @@
 #! /usr/bin/python3
 # coding=utf-8
 from numpy import *
+from os import listdir
 import operator
 def createDataSet():
     group=array([[1.0,1.1],[1.0,1.0],[0,0],[0,0.1]])
@@ -17,10 +18,10 @@ def classify0(inX,dataSet,labels,k):
     classCount={}
     for i in range(k):
         voteIlabel=labels[sortedDistIndices[i]]
-        print(voteIlabel) #距离由短到长得到对应标签的值
+        #print(voteIlabel) #距离由短到长得到对应标签的值
         classCount[voteIlabel]=classCount.get(voteIlabel,0)+1
-        print(classCount) #得到标签及其数量的字典列表
-    sortedClassCount=sorted(classCount.iteritems(),key=operator.itemgetter(1),reverse=True)
+        #print(classCount) #得到标签及其数量的字典列表
+    sortedClassCount=sorted(classCount.items(),key=operator.itemgetter(1),reverse=True)
     #print(classCount.items())#items方法将字典变为元组列表
     #print(sortedClassCount) #将ClassCount按照第二个元素也就是不同标签出现的次数进行由大到小排序，越大说明在前k个标签中出现的重复次数越多，如果是同一个标签就不存在排序。所以该算法的核心并不是找最近的标签，而且找在k个最近中出现概率最大的标签
     return sortedClassCount[0][0]
@@ -75,3 +76,37 @@ def classifyPerson():
     #print(datingLabels)
     classifierResult=classify0((inArr-minVals)/ranges,normMat,datingLabels,3)
     print('You will probably like the person ',classifierResult)
+def img2vector(fileName):
+    returnVect=zeros((1,1024))
+    fr=open(fileName)
+    for i in range(32):
+        lineStr=fr.readline()
+        for j in range(32):
+            returnVect[0,32*i+j]=int(lineStr[j])
+    return returnVect
+def handwritingClassTest():
+    hwLabel=[]
+    trainingFileList=listdir('digits/trainingDigits')
+    m=len(trainingFileList)
+    trainingMat=zeros((m,1024))
+    for i in range(m):
+        fileNameStr=trainingFileList[i]
+        fileName=fileNameStr.split('.')[0]
+        classNumStr=int(fileName.split('_')[0])
+        hwLabel.append(classNumStr)
+        trainingMat[i,:]=img2vector('digits/trainingDigits/%s' % fileNameStr)
+    testFileList=listdir('digits/testDigits')
+    errorCount=0.0
+    testM=len(testFileList)
+    for i in range(testM):
+        fileNameStr=testFileList[i]
+        fileName=fileNameStr.split('.')[0]
+        classNumStr=int(fileName.split('_')[0])
+        testMat=img2vector('digits/testDigits/%s'%fileNameStr)
+        classifierResult=classify0(testMat,trainingMat,hwLabel,3)
+        print('the classifier came back with %d,the real answer is %d'% (classifierResult,classNumStr))
+        if  classifierResult!=classNumStr:
+            errorCount+=1.0
+    errorRate=errorCount/float(testM)
+    print('The errorRate is %s'%errorRate)
+
