@@ -1,4 +1,13 @@
 from math import log
+import operator
+def majorityCount(classList):
+    classCount={}
+    for vote in classCount:
+        if  vote not in classCount.keys():
+            classCount[vote]=0
+        classCount[vote]+=1
+    sortedClassCount=sorted(classCount.items(),key=operator.itemgetter(1),reverse=True)
+    return sortedClassCount[0][0]
 def calcShannonEntropy(dataSet):
     numEntries=len(dataSet)
     labelCount={}
@@ -46,3 +55,22 @@ def chooseBestFeatureToSplit(dataSet):
             bestInfoGain=infoGain
             bestFeature=i
     return bestFeature
+def createTree(dataSet,labels):
+    classList=[example[-1] for example in dataSet]
+    #firsts stopping condition
+    if  classList.count(classList[0])==len(classList):
+        return classList[0]
+    #second stopping condition
+    if len(dataSet[0])==1:
+        return majorityCount(classList)
+    #building a tree
+    bestFeature=chooseBestFeatureToSplit(dataSet)
+    bestFeatureLabel=labels[bestFeature]
+    del(labels[bestFeature])
+    myTree={bestFeatureLabel:{}}
+    featureValue=[example[bestFeature] for example in dataSet]
+    uniqueVals=set(featureValue)
+    for value in uniqueVals:
+        subLabels=labels[:]
+        myTree[bestFeatureLabel][value]=createTree(splitDataSet(dataSet,bestFeature,value),subLabels)
+    return myTree
