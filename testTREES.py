@@ -1,4 +1,5 @@
 import trees
+import treePlotter
 myDat,myLabels=trees.createDataSet()
 myShannonEntropy=trees.calcShannonEntropy(myDat)
 print(myShannonEntropy)
@@ -8,3 +9,8 @@ bestFeature=trees.chooseBestFeatureToSplit(myDat)
 print(bestFeature)
 myTree=trees.createTree(myDat,myLabels)
 print(myTree)
+#treePlotter.createPlot()
+myTree=treePlotter.retrieveTree(0)
+print(myTree)
+print(treePlotter.getLeafsNum(myTree))
+print(treePlotter.getTreeDepth(myTree))
