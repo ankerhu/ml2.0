@@ -1,4 +1,6 @@
 from numpy import *
+import sys
+
 def loadDataSet():
     postingList=[['my', 'dog', 'has', 'flea', \
                           'problems', 'help', 'please'],
@@ -64,13 +66,46 @@ def classifyNB(vec2Classify,p0Vect,p1Vect,pClass1):
 
 def textParse(bigString):
     import re
-    listOfTokens=re.split(r'\w*',bigString)
+    listOfTokens=re.split(r'\W*',bigString)
     return [tok.lower() for tok in listOfTokens if len(tok) > 2]
 
 def spamTest():
     docList=[]
     classList=[]
     fullText=[]
+    #load and parse text files
     for i in range(1,26):
-        wordList=textParse(open('email/spam/%d.txt'%i).read())
-        
+        wordList=textParse(open('email/spam/%d.txt' % i,errors='ignore').read())
+        docList.append(wordList)
+        fullText.extend(wordList)
+        classList.append(1)
+        wordList=textParse(open('email/ham/%d.txt' % i,errors='ignore').read())
+        docList.append(wordList)
+        fullText.extend(wordList)
+        classList.append(0)
+    vocabList=createVocabList(docList)
+    #randomly create the training set
+    trainingSet=list(range(50))
+    testSet=[]
+    for i in range(10):
+        randIndex=int(random.uniform(0,len(trainingSet)))
+        testSet.append(trainingSet[randIndex])
+        del(trainingSet[randIndex])
+    #train the traingSet
+    trainMat=[]
+    trainClasses=[]
+    for docIndex in trainingSet:
+        trainMat.append(setOfWord2Vec(vocabList,docList[docIndex]))
+        trainClasses.append(classList[docIndex])
+    p0Vect,p1Vect,pSpam=trainNB0(trainMat,trainClasses)
+    #classify the textSet and calculate the error rate
+    errorCount=0
+    errorTokenList=[]
+    for docIndex in testSet:
+        wordVector=setOfWord2Vec(vocabList,docList[docIndex])
+        if classifyNB(wordVector,p0Vect,p1Vect,pSpam) != classList[docIndex]:
+            errorCount += 1
+            errorTokenList.append(docList[docIndex])
+    print('The error rate is :',float(errorCount)/len(testSet))
+    if  errorCount != 0:
+        print('Classification error ',errorTokenList)

@@ -1,4 +1,5 @@
 import bayes
+'''
 postingList,classList=bayes.loadDataSet()
 myVocabList=bayes.createVocabList(postingList)
 print(myVocabList)
@@ -18,4 +19,5 @@ print('{} classified as:{}'.format(testEntry,bayes.classifyNB(thisDoc,p0Vect,p1V
 testEntry=['stupid','garbage']
 thisDoc=bayes.setOfWord2Vec(myVocabList,testEntry)
 print('{} classified as:{}'.format(testEntry,bayes.classifyNB(thisDoc,p0Vect,p1Vect,pAbusive)))
-
+'''
+bayes.spamTest()
