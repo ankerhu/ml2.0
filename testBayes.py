@@ -1,4 +1,5 @@
 import bayes
+import feedparser
 '''
 postingList,classList=bayes.loadDataSet()
 myVocabList=bayes.createVocabList(postingList)
@@ -20,4 +21,10 @@ testEntry=['stupid','garbage']
 thisDoc=bayes.setOfWord2Vec(myVocabList,testEntry)
 print('{} classified as:{}'.format(testEntry,bayes.classifyNB(thisDoc,p0Vect,p1Vect,pAbusive)))
 '''
-bayes.spamTest()
+
+nasa=feedparser.parse('http://www.nasa.gov/rss/dyn/image_of_the_day.rss')
+yahoo=feedparser.parse('http://www.nasa.gov/rss/dyn/image_of_the_day.rss')
+print(len(nasa['entries']))
+myVocabList,pNasa,pYahoo=bayes.localWords(nasa,yahoo)
+
+#bayes.spamTest()
