@@ -24,7 +24,7 @@ print('{} classified as:{}'.format(testEntry,bayes.classifyNB(thisDoc,p0Vect,p1V
 
 nasa=feedparser.parse('http://www.nasa.gov/rss/dyn/image_of_the_day.rss')
 yahoo=feedparser.parse('http://www.nasa.gov/rss/dyn/image_of_the_day.rss')
-print(len(nasa['entries']))
-myVocabList,pNasa,pYahoo=bayes.localWords(nasa,yahoo)
-
+#print(len(nasa['entries']))
+#myVocabList,pNasa,pYahoo=bayes.localWords(nasa,yahoo)
+bayes.getTopWords(nasa,yahoo)
 #bayes.spamTest()

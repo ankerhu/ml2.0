@@ -160,3 +160,21 @@ def localWords(feed0,feed1):
             errorCount += 1
     print('the error rate is' , float(errorCount)/len(testSet))
     return vocabList,p0Vect,p1Vect
+
+def getTopWords(nasa,yahoo):
+    import operator
+    myVocabList,pNasa,pYahoo=localWords(nasa,yahoo)
+    topNasa=[]
+    topYahoo=[]
+    for i in range(len(pNasa)):
+        if pNasa[i] > -6.0 : topNasa.append((myVocabList[i],pNasa[i]))
+        if pYahoo[i] > -6.0 : topYahoo.append((myVocabList[i],pYahoo[i]))
+    sortedNasa = sorted(topNasa,key=lambda pair : pair[1],reverse=True)
+    print('NASA**NASA**NASA**NASA**NASA**NASA**NASA**NASA**NASA**')
+    for item in sortedNasa:
+        print(item)
+    sortedYahoo = sorted(topYahoo,key=lambda pair : pair[1],reverse=True)
+    print('YAHOO**YAHOO**YAHOO**YAHOO**YAHOO**YAHOO**YAHOO**YAHOO**')
+    for item in sortedYahoo:
+        print(item)
+    
