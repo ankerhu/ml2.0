@@ -55,6 +55,14 @@ def stocGradAscent1(dataMatrix,classLabel,numIter=150):
             del(index[stocIndex])
     return weights
 
+def classifyVector(inX,weights):
+    prob = sigmoid(sum(inX * weights))
+    if  prob > 0.5:
+        return 1.0
+    else:
+        return 0.0
+
+
 def plotBestFit(wei):
     import matplotlib.pyplot as plt
     weights = wei #矩阵变二维数组
@@ -82,3 +90,37 @@ def plotBestFit(wei):
     plt.xlabel('X1')
     plt.ylabel('X2')
     plt.show()
+
+def colicTest():
+    frTrain = open('horseColicTraining.txt')
+    frTest = open('horseColicTest.txt')
+    trainingSet = []
+    trainingLabels = []
+    for line in frTrain.readlines():
+        currentLine = line.strip().split('\t')
+        lineArray = []
+        for i in range(21):
+            lineArray.append(float(currentLine[i]))
+        trainingSet.append(lineArray)
+        trainingLabels.append(float(currentLine[21]))
+    trainWeights = stocGradAscent1(trainingSet,trainingLabels,500)
+    errorCount = 0
+    numTestVec = 0.0
+    for line in frTest.readlines():
+        numTestVec += 1.0
+        currentLine = line.strip().split('\t')
+        lineArray = []
+        for i in range(21):
+            lineArray.append(float(currentLine[i]))
+        if int(classifyVector(array(lineArray),trainWeights)) != int(currentLine[21]):
+            errorCount += 1
+    errorRate = float(errorCount)/numTestVec
+    print('The error rate of this test is : %f' % errorRate)
+    return errorRate
+
+def multiTest():
+    numTests = 10
+    errorSum = 0.0
+    for k in range(numTests):
+        errorSum += colicTest()
+    print('after %d iterations the average error rate is : %f' % (numTests,errorSum/float(numTests)))
